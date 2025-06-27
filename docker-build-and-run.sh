@@ -2,7 +2,8 @@
 # Quick script to build and run the Docker container
 
 echo "Building Animal Character Analyzer Service Docker image..."
-docker build -t animal-character-analyzer-service .
+echo "Using platform: linux/amd64 for compatibility..."
+docker build --platform linux/amd64 -t animal-character-analyzer-service .
 
 if [ $? -eq 0 ]; then
     echo "Build successful! Starting container..."
