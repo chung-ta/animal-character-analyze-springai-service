@@ -1,0 +1,82 @@
+[
+  {
+    "id": "wise-owl",
+    "name": "Wise Owl",
+    "species": "Great Horned Owl",
+    "traits": ["analytical", "observant", "knowledge-seeking", "thoughtful", "introspective"],
+    "baseStory": "A nocturnal scholar who sees what others miss in the darkness. The Wise Owl spends nights perched high above, contemplating the mysteries of the world.",
+    "imageUrl": "/assets/characters/wise-owl.png"
+  },
+  {
+    "id": "playful-otter",
+    "name": "Playful Otter",
+    "species": "River Otter",
+    "traits": ["social", "energetic", "fun-loving", "creative", "adventurous"],
+    "baseStory": "A water-loving adventurer who finds joy in every splash. The Playful Otter turns every day into a celebration and every challenge into a game.",
+    "imageUrl": "/assets/characters/playful-otter.png"
+  },
+  {
+    "id": "noble-lion",
+    "name": "Noble Lion",
+    "species": "African Lion",
+    "traits": ["confident", "leadership", "protective", "courageous", "charismatic"],
+    "baseStory": "A natural-born leader who commands respect through strength and wisdom. The Noble Lion protects their pride with fierce dedication.",
+    "imageUrl": "/assets/characters/noble-lion.png"
+  },
+  {
+    "id": "curious-fox",
+    "name": "Curious Fox",
+    "species": "Red Fox",
+    "traits": ["clever", "adaptable", "mischievous", "quick-witted", "resourceful"],
+    "baseStory": "A cunning explorer who navigates life with wit and charm. The Curious Fox finds creative solutions to every puzzle life presents.",
+    "imageUrl": "/assets/characters/curious-fox.png"
+  },
+  {
+    "id": "gentle-deer",
+    "name": "Gentle Deer",
+    "species": "White-tailed Deer",
+    "traits": ["empathetic", "graceful", "intuitive", "peaceful", "sensitive"],
+    "baseStory": "A serene soul who moves through life with quiet elegance. The Gentle Deer senses the emotions of others and offers comfort without words.",
+    "imageUrl": "/assets/characters/gentle-deer.png"
+  },
+  {
+    "id": "mighty-dragon",
+    "name": "Mighty Dragon",
+    "species": "Eastern Dragon",
+    "traits": ["ambitious", "powerful", "mysterious", "wise", "passionate"],
+    "baseStory": "An ancient spirit with the power to shape destiny. The Mighty Dragon soars above limitations, breathing life into impossible dreams.",
+    "imageUrl": "/assets/characters/mighty-dragon.png"
+  },
+  {
+    "id": "loyal-wolf",
+    "name": "Loyal Wolf",
+    "species": "Gray Wolf",
+    "traits": ["devoted", "strategic", "team-oriented", "protective", "instinctive"],
+    "baseStory": "A pack guardian who values bonds above all else. The Loyal Wolf leads with both strength and compassion, never leaving anyone behind.",
+    "imageUrl": "/assets/characters/loyal-wolf.png"
+  },
+  {
+    "id": "free-eagle",
+    "name": "Free Spirit Eagle",
+    "species": "Bald Eagle",
+    "traits": ["independent", "visionary", "bold", "freedom-loving", "determined"],
+    "baseStory": "A soaring visionary who sees the bigger picture from great heights. The Free Spirit Eagle breaks chains and inspires others to fly.",
+    "imageUrl": "/assets/characters/free-eagle.png"
+  },
+  {
+    "id": "creative-peacock",
+    "name": "Creative Peacock",
+    "species": "Indian Peacock",
+    "traits": ["artistic", "expressive", "unique", "confident", "vibrant"],
+    "baseStory": "A living canvas who turns life into art. The Creative Peacock spreads beauty wherever they go, inspiring others to embrace their colors.",
+    "imageUrl": "/assets/characters/creative-peacock.png"
+  },
+  {
+    "id": "steady-turtle",
+    "name": "Steady Turtle",
+    "species": "Sea Turtle",
+    "traits": ["patient", "wise", "persistent", "reliable", "calm"],
+    "baseStory": "An ancient traveler who knows that slow and steady wins the race. The Steady Turtle carries wisdom from countless journeys on their shell.",
+    "imageUrl": "/assets/characters/steady-turtle.png"
+  }
+]
