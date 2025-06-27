@@ -171,23 +171,23 @@ public class ClaudeAIService implements AIService {
     
     private String generatePersonalizedStory(Character character, PersonalityAnalysis personality) {
         return String.format(
-            "%s\n\n" +
-            "Looking at your photo, I can see your %s, which perfectly mirrors the essence of the %s. " +
-            "Your %s tells a story of someone who embodies the %s qualities that define this magnificent creature.\n\n" +
-            "Just as the %s %s, you too carry these traits within you. " +
-            "Your unique combination of %s nature, combined with your evident %s spirit, " +
-            "creates a personality that's both distinctive and remarkable. " +
-            "This connection goes beyond mere coincidence – it's a reflection of your authentic self.",
+            "Looking at your photo, I can see your %s which reveals the essence of the %s. " +
+            "Your %s mirrors the %s's %s nature, showing someone who %s. " +
+            "Just as the %s %s, you radiate %s energy. " +
+            "This unique combination of %s and %s makes you a true %s spirit.",
             
-            character.getBaseStory(),
             personality.getExpression(),
             character.getName(),
             personality.getEnergy(),
-            String.join(", ", character.getTraits().subList(0, Math.min(3, character.getTraits().size()))),
+            character.getName(),
+            character.getTraits().get(0),
+            getPersonalityInsight(character),
             character.getName(),
             getCharacterAction(character),
+            character.getTraits().get(1),
             character.getTraits().get(0),
-            character.getTraits().get(1)
+            character.getTraits().get(2 < character.getTraits().size() ? 2 : 1),
+            character.getName()
         );
     }
     
@@ -205,6 +205,22 @@ public class ClaudeAIService implements AIService {
             "steady-turtle", "perseveres with patience"
         );
         return actions.getOrDefault(character.getId(), "embodies their true nature");
+    }
+    
+    private String getPersonalityInsight(Character character) {
+        Map<String, String> insights = Map.of(
+            "wise-owl", "values deep understanding and thoughtful analysis",
+            "playful-otter", "finds happiness in connecting with others",
+            "noble-lion", "naturally inspires and protects those around them",
+            "curious-fox", "approaches life with clever adaptability",
+            "gentle-deer", "brings peace and harmony wherever they go",
+            "mighty-dragon", "pursues ambitious goals with fierce determination",
+            "loyal-wolf", "builds strong bonds and values community",
+            "free-eagle", "seeks freedom and new horizons",
+            "creative-peacock", "expresses themselves with vibrant creativity",
+            "steady-turtle", "achieves success through persistence and wisdom"
+        );
+        return insights.getOrDefault(character.getId(), "lives authentically");
     }
     
     // Inner class for personality analysis
