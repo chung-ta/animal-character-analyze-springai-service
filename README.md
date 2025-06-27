@@ -64,12 +64,30 @@ export CLAUDE_API_KEY=your-api-key-here
 ```
 
 4. Build and run:
-```bash
-# Using Maven
-./mvnw spring-boot:run
 
-# Using Gradle
-./gradlew bootRun
+### Option 1: Using Maven
+```bash
+# Build the application
+./mvnw clean package
+
+# Run the application
+./mvnw spring-boot:run
+```
+
+### Option 2: Using Docker
+```bash
+# Build the Docker image
+docker build -t animal-character-analyzer-service .
+
+# Run the container
+docker run -p 8080:8080 \
+  -e CLAUDE_API_KEY=${CLAUDE_API_KEY} \
+  -e SPRING_PROFILES_ACTIVE=development \
+  animal-character-analyzer-service
+
+# Or run with docker-compose from parent directory
+cd ..
+docker-compose up backend
 ```
 
 The service will be available at `http://localhost:8080`
@@ -147,10 +165,53 @@ Spring Boot Actuator endpoints:
 
 ## Docker Support
 
-Build and run with Docker:
+### Local Development with Docker
+
+1. Build the Docker image:
 ```bash
 docker build -t animal-character-analyzer-service .
+```
+
+2. Run the container:
+```bash
+# Basic run
 docker run -p 8080:8080 -e CLAUDE_API_KEY=your-key animal-character-analyzer-service
+
+# Run with all environment variables
+docker run -p 8080:8080 \
+  -e CLAUDE_API_KEY=${CLAUDE_API_KEY} \
+  -e SPRING_PROFILES_ACTIVE=production \
+  -e SERVER_PORT=8080 \
+  --name animal-analyzer-backend \
+  animal-character-analyzer-service
+```
+
+3. Test the container:
+```bash
+# Check if service is healthy
+curl http://localhost:8080/api/v1/health
+
+# View container logs
+docker logs animal-analyzer-backend
+
+# Stop the container
+docker stop animal-analyzer-backend
+docker rm animal-analyzer-backend
+```
+
+### Production Build for Render
+
+To test the exact build that Render will use:
+```bash
+# Build with production settings
+docker build -t animal-analyzer-prod .
+
+# Run with Render-like environment
+docker run -p 3000:3000 \
+  -e PORT=3000 \
+  -e CLAUDE_API_KEY=${CLAUDE_API_KEY} \
+  -e SPRING_PROFILES_ACTIVE=production \
+  animal-analyzer-prod
 ```
 
 ## Testing
