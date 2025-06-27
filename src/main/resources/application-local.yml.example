@@ -1,0 +1,15 @@
+# Example configuration for local development with real Claude API
+# Copy this file to application-local.yml and update with your values
+# NEVER commit application-local.yml to version control!
+
+claude:
+  api:
+    key: your-api-key-here
+    use-real-api: true
+
+# Optional overrides
+#  model: claude-3-opus-20240229
+#  max-tokens: 1500
+
+# To use this configuration, run:
+# mvn spring-boot:run -Dspring.profiles.active=local

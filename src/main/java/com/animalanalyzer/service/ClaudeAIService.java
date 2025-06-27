@@ -8,7 +8,13 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import reactor.core.publisher.Mono;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -25,39 +31,61 @@ public class ClaudeAIService implements AIService {
     
     private final CharacterService characterService;
     private final ObjectMapper objectMapper;
+    private final WebClient webClient;
     private final Random random = new Random();
     
-    public ClaudeAIService(CharacterService characterService, ObjectMapper objectMapper) {
+    @Value("${claude.api.model:claude-3-opus-20240229}")
+    private String model;
+    
+    @Value("${claude.api.max-tokens:1500}")
+    private int maxTokens;
+    
+    @Value("${claude.api.use-real-api:false}")
+    private boolean useRealApi;
+    
+    public ClaudeAIService(CharacterService characterService, 
+                          ObjectMapper objectMapper,
+                          @Value("${claude.api.key}") String apiKey,
+                          @Value("${claude.api.url}") String apiUrl) {
         this.characterService = characterService;
         this.objectMapper = objectMapper;
+        this.apiKey = apiKey;
+        this.apiUrl = apiUrl;
+        this.webClient = WebClient.builder()
+            .baseUrl(apiUrl)
+            .defaultHeader("x-api-key", apiKey)
+            .defaultHeader("anthropic-version", "2023-06-01")
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build();
     }
     
     @Override
     public AIAnalysisResult analyzeImage(String imageBase64) throws Exception {
-        // For MVP, we'll simulate the AI analysis with personality-based matching
-        // In production, this would make actual API calls to Claude
-        
-        log.info("Analyzing image with Claude AI (simulated for MVP)");
-        
-        // Simulate processing time
-        Thread.sleep(2000);
-        
-        // Simulate personality analysis from image
-        PersonalityAnalysis personality = analyzePersonality(imageBase64);
-        
-        // Match character based on personality
-        Character selectedCharacter = matchCharacterToPersonality(personality);
-        
-        // Generate a personalized story incorporating personality
-        String personalizedStory = generatePersonalizedStory(selectedCharacter, personality);
-        
-        return AIAnalysisResult.builder()
-            .suggestedCharacter(selectedCharacter.getName())
-            .confidence(personality.getConfidence())
-            .traits(selectedCharacter.getTraits())
-            .reasoning(personality.getReasoning())
-            .personalizedStory(personalizedStory)
-            .build();
+        if (useRealApi && apiKey != null && !apiKey.isEmpty() && !apiKey.equals("your-api-key-here")) {
+            log.info("Analyzing image with Claude AI (real API)");
+            return callClaudeAPI(imageBase64);
+        } else {
+            log.info("Analyzing image with Claude AI (simulated)");
+            // Simulate processing time
+            Thread.sleep(2000);
+            
+            // Simulate personality analysis from image
+            PersonalityAnalysis personality = analyzePersonality(imageBase64);
+            
+            // Match character based on personality
+            Character selectedCharacter = matchCharacterToPersonality(personality);
+            
+            // Generate a personalized story incorporating personality
+            String personalizedStory = generatePersonalizedStory(selectedCharacter, personality);
+            
+            return AIAnalysisResult.builder()
+                .suggestedCharacter(selectedCharacter.getName())
+                .confidence(personality.getConfidence())
+                .traits(selectedCharacter.getTraits())
+                .reasoning(personality.getReasoning())
+                .personalizedStory(personalizedStory)
+                .build();
+        }
     }
     
     private PersonalityAnalysis analyzePersonality(String imageBase64) {
@@ -161,36 +189,157 @@ public class ClaudeAIService implements AIService {
         private String reasoning;
     }
     
-    // This would be the actual implementation with Claude API
-    /*
     private AIAnalysisResult callClaudeAPI(String imageBase64) throws Exception {
-        String prompt = buildPrompt();
-        
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("x-api-key", apiKey);
-        headers.set("anthropic-version", "2023-06-01");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        
-        Map<String, Object> requestBody = Map.of(
-            "model", "claude-3-opus-20240229",
-            "max_tokens", 1000,
-            "messages", List.of(
-                Map.of(
-                    "role", "user",
-                    "content", List.of(
-                        Map.of("type", "text", "text", prompt),
-                        Map.of("type", "image", "source", Map.of(
-                            "type", "base64",
-                            "media_type", "image/jpeg",
-                            "data", imageBase64
-                        ))
+        try {
+            String prompt = loadPromptTemplate();
+            
+            Map<String, Object> requestBody = Map.of(
+                "model", model,
+                "max_tokens", maxTokens,
+                "messages", List.of(
+                    Map.of(
+                        "role", "user",
+                        "content", List.of(
+                            Map.of("type", "text", "text", prompt),
+                            Map.of("type", "image", "source", Map.of(
+                                "type", "base64",
+                                "media_type", "image/jpeg",
+                                "data", imageBase64.replaceFirst("^data:image/[^;]+;base64,", "")
+                            ))
+                        )
                     )
                 )
-            )
-        );
-        
-        // Make API call and parse response
-        // ...
+            );
+            
+            log.debug("Sending request to Claude API");
+            
+            Map<String, Object> response = webClient.post()
+                .uri("/messages")
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+            
+            log.debug("Received response from Claude API");
+            
+            // Extract the assistant's response
+            List<Map<String, Object>> content = (List<Map<String, Object>>) response.get("content");
+            if (content != null && !content.isEmpty()) {
+                String textResponse = (String) content.get(0).get("text");
+                
+                // Claude sometimes returns incomplete JSON or with formatting issues
+                // Try to extract JSON from the response
+                String jsonResponse = extractJsonFromResponse(textResponse);
+                
+                log.debug("Extracted JSON response: {}", jsonResponse);
+                
+                // Parse the JSON response
+                AIAnalysisResult result = objectMapper.readValue(jsonResponse, AIAnalysisResult.class);
+                
+                // Ensure we have the character object populated
+                Character character = characterService.findByName(result.getSuggestedCharacter())
+                    .orElse(characterService.getAllCharacters().get(0));
+                
+                return AIAnalysisResult.builder()
+                    .suggestedCharacter(character.getName())
+                    .confidence(result.getConfidence())
+                    .traits(result.getTraits() != null ? result.getTraits() : character.getTraits())
+                    .reasoning(result.getReasoning())
+                    .personalizedStory(result.getPersonalizedStory())
+                    .build();
+            }
+            
+            throw new RuntimeException("No content in Claude API response");
+            
+        } catch (Exception e) {
+            log.error("Error calling Claude API: {}", e.getMessage(), e);
+            // Fallback to simulated response
+            return analyzeImage(imageBase64);
+        }
     }
-    */
+    
+    private String loadPromptTemplate() {
+        try {
+            return new String(Files.readAllBytes(
+                Paths.get(getClass().getClassLoader().getResource("claude-prompt-template.txt").toURI())
+            ));
+        } catch (Exception e) {
+            log.error("Error loading prompt template", e);
+            return getDefaultPrompt();
+        }
+    }
+    
+    private String extractJsonFromResponse(String response) {
+        // Try to find JSON object in the response
+        int startIndex = response.indexOf("{");
+        int endIndex = response.lastIndexOf("}");
+        
+        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+            String jsonStr = response.substring(startIndex, endIndex + 1);
+            
+            // Claude sometimes returns JSON with literal \n in the structure (not in strings)
+            // Remove these literal \n characters that appear outside of string values
+            // First, let's clean up the JSON structure
+            jsonStr = jsonStr.replaceAll(",\\s*\\\\n\\s*", ", ");
+            jsonStr = jsonStr.replaceAll("\\{\\s*\\\\n\\s*", "{ ");
+            jsonStr = jsonStr.replaceAll("\\s*\\\\n\\s*\\}", " }");
+            jsonStr = jsonStr.replaceAll(":\\s*\\\\n\\s*", ": ");
+            
+            // Remove any remaining literal \n that's not inside quotes
+            // This is a more targeted approach that preserves \n inside string values
+            StringBuilder cleaned = new StringBuilder();
+            boolean inString = false;
+            boolean escape = false;
+            
+            for (int i = 0; i < jsonStr.length(); i++) {
+                char c = jsonStr.charAt(i);
+                
+                if (!escape && c == '"') {
+                    inString = !inString;
+                }
+                
+                if (!inString && c == '\\' && i + 1 < jsonStr.length() && jsonStr.charAt(i + 1) == 'n') {
+                    // Skip literal \n outside of strings
+                    i++; // Also skip the 'n'
+                    cleaned.append(' '); // Replace with space
+                } else {
+                    cleaned.append(c);
+                }
+                
+                escape = !escape && c == '\\';
+            }
+            
+            return cleaned.toString().trim();
+        }
+        
+        // If no JSON found, try to parse the entire response
+        return response;
+    }
+    
+    private String getDefaultPrompt() {
+        return """
+            Analyze this person's photo and match them to one of these animal characters based on their facial features, expression, and perceived personality:
+            
+            Characters:
+            1. Wise Owl - analytical, observant, knowledge-seeking, thoughtful
+            2. Playful Otter - social, energetic, fun-loving, creative
+            3. Noble Lion - confident, leadership, protective, courageous
+            4. Curious Fox - clever, adaptable, mischievous, quick-witted
+            5. Gentle Deer - empathetic, graceful, intuitive, peaceful
+            6. Mighty Dragon - ambitious, powerful, mysterious, passionate
+            7. Loyal Wolf - devoted, strategic, team-oriented, protective
+            8. Free Spirit Eagle - independent, visionary, bold, freedom-loving
+            9. Creative Peacock - artistic, expressive, unique, vibrant
+            10. Steady Turtle - patient, wise, persistent, calm
+            
+            Return ONLY a valid JSON response with this exact structure (ensure all strings are properly escaped):
+            {
+              "suggestedCharacter": "Character name from the list above",
+              "confidence": 0.0-1.0,
+              "traits": ["trait1", "trait2", "trait3", "trait4"],
+              "reasoning": "Your reasoning here as a single line without newlines",
+              "personalizedStory": "Your story here as a single line without newlines"
+            }
+            """;
+    }
 }

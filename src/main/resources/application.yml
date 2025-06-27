@@ -12,7 +12,10 @@ spring:
 claude:
   api:
     key: ${CLAUDE_API_KEY:}
-    url: https://api.anthropic.com/v1/messages
+    url: https://api.anthropic.com/v1
+    model: ${CLAUDE_MODEL:claude-3-opus-20240229}
+    max-tokens: ${CLAUDE_MAX_TOKENS:1500}
+    use-real-api: ${CLAUDE_USE_REAL_API:true}
 
 management:
   endpoints:

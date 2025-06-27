@@ -18,13 +18,17 @@ Please analyze:
 3. Any subtle cues about their character traits
 4. How their appearance aligns with specific animal characteristics
 
-Return a JSON response with:
+Return ONLY a valid JSON response with the following structure. Ensure all text is on a single line with no newlines:
+
 {
   "suggestedCharacter": "Character name from the list above",
   "confidence": 0.0-1.0,
   "traits": ["list", "of", "matching", "traits"],
-  "reasoning": "2-3 sentences explaining the visual cues and personality traits you observed that led to this match",
-  "personalizedStory": "A 3-4 paragraph personalized story that:\n    1. Starts with the character's base description\n    2. Describes specific personality traits you observed in their photo (expression, energy, demeanor)\n    3. Explains how these observed traits connect to the animal character\n    4. Creates a narrative that feels personal and specific to this individual"
+  "reasoning": "2-3 sentences explaining the visual cues and personality traits you observed that led to this match. Keep on single line.",
+  "personalizedStory": "A personalized story in 3-4 paragraphs that: (1) Starts with the character's base description. (2) Describes specific personality traits you observed in their photo (expression, energy, demeanor). (3) Explains how these observed traits connect to the animal character. (4) Creates a narrative that feels personal and specific to this individual. Write as one continuous string with no line breaks."
 }
 
-Important: Make the story feel personal by referencing specific things you observe in their photo - their expression, the energy they project, and how these connect to the animal's characteristics.
+IMPORTANT: 
+- Return ONLY the JSON object, no additional text
+- Ensure all string values are on a single line with no newlines
+- Make the story feel personal by referencing specific things you observe in their photo
