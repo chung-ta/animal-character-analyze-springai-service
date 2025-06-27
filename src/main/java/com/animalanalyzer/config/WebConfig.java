@@ -13,11 +13,23 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-            .allowedOrigins(allowedOrigins.split(","))
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-            .allowedHeaders("*")
-            .allowCredentials(true)
-            .maxAge(3600);
+        String[] origins = allowedOrigins.split(",");
+        
+        // If allowedOrigins contains "*", use allowedOriginPatterns instead
+        if (allowedOrigins.contains("*")) {
+            registry.addMapping("/api/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(false)  // Cannot use credentials with wildcard
+                .maxAge(3600);
+        } else {
+            registry.addMapping("/api/**")
+                .allowedOrigins(origins)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
+        }
     }
 }

@@ -30,3 +30,6 @@ logging:
   level:
     com.animalanalyzer: DEBUG
     org.springframework.web: INFO
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
