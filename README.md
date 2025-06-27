@@ -7,9 +7,9 @@ A Spring Boot REST API service that analyzes user photos using Claude AI to matc
 This is the backend service for the Animal Character Analyzer project. It provides:
 - RESTful API endpoints for image analysis
 - Integration with Claude AI for intelligent character matching
-- Stateless architecture with in-memory caching
+- Stateless architecture for easy deployment
 - Image processing and validation
-- Rate limiting for API protection
+- CORS support for web applications
 
 ## Tech Stack
 
@@ -152,9 +152,6 @@ src/main/java/com/animalanalyzer/
 - `SERVER_PORT` - Server port (default: 8080)
 - `SPRING_PROFILES_ACTIVE` - Active Spring profile
 
-### Rate Limiting
-- Default: 5 requests per minute per IP address
-- Configurable in `application.yml`
 
 ## Monitoring
 
