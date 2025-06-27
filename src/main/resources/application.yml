@@ -13,8 +13,8 @@ claude:
   api:
     key: ${CLAUDE_API_KEY:}
     url: https://api.anthropic.com/v1
-    model: ${CLAUDE_MODEL:claude-3-opus-20240229}
-    max-tokens: ${CLAUDE_MAX_TOKENS:1500}
+    model: ${CLAUDE_MODEL:claude-3-sonnet-20240229}  # Sonnet is faster than Opus
+    max-tokens: ${CLAUDE_MAX_TOKENS:800}  # Reduced for faster response
     use-real-api: ${CLAUDE_USE_REAL_API:true}
 
 management:

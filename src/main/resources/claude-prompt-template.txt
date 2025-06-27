@@ -1,34 +1,27 @@
-Analyze this person's photo and match them to one of these animal characters based on their facial features, expression, and perceived personality:
+Match this person to ONE animal character based on their photo:
 
 Characters:
-1. Wise Owl - analytical, observant, knowledge-seeking, thoughtful
-2. Playful Otter - social, energetic, fun-loving, creative
-3. Noble Lion - confident, leadership, protective, courageous
-4. Curious Fox - clever, adaptable, mischievous, quick-witted
-5. Gentle Deer - empathetic, graceful, intuitive, peaceful
-6. Mighty Dragon - ambitious, powerful, mysterious, passionate
-7. Loyal Wolf - devoted, strategic, team-oriented, protective
-8. Free Spirit Eagle - independent, visionary, bold, freedom-loving
-9. Creative Peacock - artistic, expressive, unique, vibrant
-10. Steady Turtle - patient, wise, persistent, calm
+• Wise Owl - analytical, thoughtful
+• Playful Otter - social, energetic
+• Noble Lion - confident, leader
+• Curious Fox - clever, quick-witted
+• Gentle Deer - empathetic, peaceful
+• Mighty Dragon - ambitious, passionate
+• Loyal Wolf - devoted, protective
+• Free Eagle - independent, bold
+• Creative Peacock - artistic, vibrant
+• Steady Turtle - patient, calm
 
-Please analyze:
-1. Facial expression and what it reveals about their personality
-2. Overall energy and demeanor visible in the photo
-3. Any subtle cues about their character traits
-4. How their appearance aligns with specific animal characteristics
+Analyze their expression and energy to determine the best match.
 
-Return ONLY a valid JSON response with the following structure. Ensure all text is on a single line with no newlines:
+Return ONLY valid JSON:
 
 {
-  "suggestedCharacter": "Character name from the list above",
-  "confidence": 0.0-1.0,
-  "traits": ["list", "of", "matching", "traits"],
-  "reasoning": "2-3 sentences explaining the visual cues and personality traits you observed that led to this match. Keep on single line.",
-  "personalizedStory": "A personalized story in 3-4 paragraphs that: (1) Starts with the character's base description. (2) Describes specific personality traits you observed in their photo (expression, energy, demeanor). (3) Explains how these observed traits connect to the animal character. (4) Creates a narrative that feels personal and specific to this individual. Write as one continuous string with no line breaks."
+  "suggestedCharacter": "Character name",
+  "confidence": 0.7-0.9,
+  "traits": ["trait1", "trait2", "trait3"],
+  "reasoning": "Brief explanation of match based on expression/energy (1-2 sentences)",
+  "personalizedStory": "You embody the [character] spirit. Your [observed expression] reveals [trait]. Like the [character], you [connection]. This makes you [unique quality]."
 }
 
-IMPORTANT: 
-- Return ONLY the JSON object, no additional text
-- Ensure all string values are on a single line with no newlines
-- Make the story feel personal by referencing specific things you observe in their photo
+Keep response concise. No newlines in strings.

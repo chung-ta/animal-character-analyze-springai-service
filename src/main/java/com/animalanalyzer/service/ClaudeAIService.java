@@ -11,7 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -51,11 +60,29 @@ public class ClaudeAIService implements AIService {
         this.objectMapper = objectMapper;
         this.apiKey = apiKey;
         this.apiUrl = apiUrl;
+        
+        // Configure connection timeouts for better performance
+        ConnectionProvider provider = ConnectionProvider.builder("claude-api")
+            .maxConnections(10)
+            .maxIdleTime(Duration.ofSeconds(20))
+            .maxLifeTime(Duration.ofSeconds(60))
+            .pendingAcquireTimeout(Duration.ofSeconds(60))
+            .evictInBackground(Duration.ofSeconds(120))
+            .build();
+            
+        HttpClient httpClient = HttpClient.create(provider)
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+            .responseTimeout(Duration.ofSeconds(120))
+            .doOnConnected(conn ->
+                conn.addHandlerLast(new ReadTimeoutHandler(120, TimeUnit.SECONDS))
+                    .addHandlerLast(new WriteTimeoutHandler(120, TimeUnit.SECONDS)));
+        
         this.webClient = WebClient.builder()
             .baseUrl(apiUrl)
             .defaultHeader("x-api-key", apiKey)
             .defaultHeader("anthropic-version", "2023-06-01")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .clientConnector(new ReactorClientHttpConnector(httpClient))
             .build();
     }
     
@@ -211,7 +238,8 @@ public class ClaudeAIService implements AIService {
                 )
             );
             
-            log.debug("Sending request to Claude API");
+            log.info("Sending request to Claude API with model: {}", model);
+            long startTime = System.currentTimeMillis();
             
             Map<String, Object> response = webClient.post()
                 .uri("/messages")
@@ -219,6 +247,9 @@ public class ClaudeAIService implements AIService {
                 .retrieve()
                 .bodyToMono(Map.class)
                 .block();
+            
+            long duration = System.currentTimeMillis() - startTime;
+            log.info("Claude API responded in {} ms", duration);
             
             log.debug("Received response from Claude API");
             
