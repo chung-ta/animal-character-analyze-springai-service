@@ -47,7 +47,6 @@ In the Render dashboard, add these environment variables:
 |-----|-------|-------|
 | `CLAUDE_API_KEY` | `your-api-key` | Required for production AI analysis |
 | `SPRING_PROFILES_ACTIVE` | `production` | Activates production config |
-| `CORS_ALLOWED_ORIGINS` | `https://your-frontend-url.com` | Frontend URL (use `*` for testing) |
 
 ### 5. Advanced Settings
 
@@ -113,9 +112,9 @@ proxy: {
 - Review application logs for errors
 
 ### CORS Issues
-- Set `CORS_ALLOWED_ORIGINS` to your frontend URL
-- Use `*` for testing (not recommended for production)
+- CORS is configured to allow all origins by default
 - Check browser console for specific CORS errors
+- Ensure your frontend is making requests to the correct URL
 
 ### Memory Issues
 - Free tier has 512MB RAM limit

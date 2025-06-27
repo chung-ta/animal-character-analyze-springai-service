@@ -17,7 +17,6 @@ if [ $? -eq 0 ]; then
         -p 8080:8080 \
         -e CLAUDE_API_KEY=${CLAUDE_API_KEY:-"your-api-key-here"} \
         -e SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-"development"} \
-        -e CORS_ALLOWED_ORIGINS="http://localhost:3000,http://localhost:5173,http://localhost:5174" \
         --name animal-analyzer-backend \
         animal-character-analyzer-service
     

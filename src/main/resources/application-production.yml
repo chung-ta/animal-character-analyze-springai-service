@@ -29,7 +29,3 @@ logging:
     org.springframework.web: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
-
-# CORS settings for production
-cors:
-  allowed-origins: ${CORS_ALLOWED_ORIGINS:*}  # Set this in Render env vars
