@@ -82,6 +82,7 @@ public class ClaudeAIService implements AIService {
             .defaultHeader("x-api-key", apiKey)
             .defaultHeader("anthropic-version", "2023-06-01")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .clientConnector(new ReactorClientHttpConnector(httpClient))
             .build();
     }
@@ -239,12 +240,19 @@ public class ClaudeAIService implements AIService {
             );
             
             log.info("Sending request to Claude API with model: {}", model);
+            log.debug("Request body: {}", objectMapper.writeValueAsString(requestBody));
             long startTime = System.currentTimeMillis();
             
             Map<String, Object> response = webClient.post()
                 .uri("/messages")
                 .bodyValue(requestBody)
                 .retrieve()
+                .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
+                    clientResponse -> clientResponse.bodyToMono(String.class)
+                        .flatMap(errorBody -> {
+                            log.error("Claude API error response: {}", errorBody);
+                            return Mono.error(new RuntimeException("Claude API error: " + errorBody));
+                        }))
                 .bodyToMono(Map.class)
                 .block();
             
