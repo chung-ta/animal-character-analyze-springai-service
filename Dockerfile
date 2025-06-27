@@ -21,15 +21,25 @@ WORKDIR /app
 # Copy the JAR file from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Create non-root user
-RUN addgroup -g 1000 spring && adduser -u 1000 -G spring -s /bin/sh -D spring
+# Copy start script
+COPY start.sh /app/start.sh
+
+# Create non-root user and set permissions
+RUN addgroup -g 1000 spring && adduser -u 1000 -G spring -s /bin/sh -D spring && \
+    chmod +x /app/start.sh && \
+    chown spring:spring /app/start.sh
+
 USER spring:spring
 
-# Expose port
+# Expose port - Render will override this with PORT env var
 EXPOSE 8080
 
 # Set JVM options
 ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
-# Run the application
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/v1/health || exit 1
+
+# Run the application using start script
+ENTRYPOINT ["/app/start.sh"]
