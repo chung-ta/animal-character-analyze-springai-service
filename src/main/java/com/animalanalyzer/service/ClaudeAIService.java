@@ -93,26 +93,8 @@ public class ClaudeAIService implements AIService {
             log.info("Analyzing image with Claude AI (real API)");
             return callClaudeAPI(imageBase64);
         } else {
-            log.info("Analyzing image with Claude AI (simulated)");
-            // Simulate processing time
-            Thread.sleep(2000);
-            
-            // Simulate personality analysis from image
-            PersonalityAnalysis personality = analyzePersonality(imageBase64);
-            
-            // Match character based on personality
-            Character selectedCharacter = matchCharacterToPersonality(personality);
-            
-            // Generate a personalized story incorporating personality
-            String personalizedStory = generatePersonalizedStory(selectedCharacter, personality);
-            
-            return AIAnalysisResult.builder()
-                .suggestedCharacter(selectedCharacter.getName())
-                .confidence(personality.getConfidence())
-                .traits(selectedCharacter.getTraits())
-                .reasoning(personality.getReasoning())
-                .personalizedStory(personalizedStory)
-                .build();
+            log.error("Claude API key not configured. Please set CLAUDE_API_KEY environment variable.");
+            throw new RuntimeException("Claude API key not configured. Real-time image analysis requires a valid API key.");
         }
     }
     
@@ -291,14 +273,11 @@ public class ClaudeAIService implements AIService {
                 // Parse the JSON response
                 AIAnalysisResult result = objectMapper.readValue(jsonResponse, AIAnalysisResult.class);
                 
-                // Ensure we have the character object populated
-                Character character = characterService.findByName(result.getSuggestedCharacter())
-                    .orElse(characterService.getAllCharacters().get(0));
-                
+                // Return the Claude analysis directly - no need to match predefined characters
                 return AIAnalysisResult.builder()
-                    .suggestedCharacter(character.getName())
+                    .suggestedCharacter(result.getSuggestedCharacter())
                     .confidence(result.getConfidence())
-                    .traits(result.getTraits() != null ? result.getTraits() : character.getTraits())
+                    .traits(result.getTraits())
                     .reasoning(result.getReasoning())
                     .personalizedStory(result.getPersonalizedStory())
                     .build();
@@ -308,8 +287,7 @@ public class ClaudeAIService implements AIService {
             
         } catch (Exception e) {
             log.error("Error calling Claude API: {}", e.getMessage(), e);
-            // Fallback to simulated response
-            return analyzeImage(imageBase64);
+            throw new RuntimeException("Failed to analyze image with Claude API: " + e.getMessage(), e);
         }
     }
     

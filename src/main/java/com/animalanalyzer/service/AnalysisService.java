@@ -32,9 +32,12 @@ public class AnalysisService {
         AIAnalysisResult aiResult = aiService.analyzeImage(imageBase64);
         log.debug("AI analysis completed: {}", aiResult.getSuggestedCharacter());
         
-        // Find matching character
-        Character character = characterService.findByName(aiResult.getSuggestedCharacter())
-            .orElseThrow(() -> new RuntimeException("Character not found: " + aiResult.getSuggestedCharacter()));
+        // Create a dynamic character based on Claude's analysis
+        Character character = Character.builder()
+            .id(aiResult.getSuggestedCharacter().toLowerCase().replace(" ", "-"))
+            .name(aiResult.getSuggestedCharacter())
+            .traits(aiResult.getTraits())
+            .build();
         
         // Build response
         return AnalysisResponse.builder()

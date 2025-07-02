@@ -1,26 +1,31 @@
-Analyze this person's photo and match them to one of these animal characters based on their facial features, expression, and perceived personality:
+Analyze this person's photo and determine which animal best represents their personality based on their facial features, expression, body language, and overall energy.
 
-Characters:
-1. Wise Owl - analytical, observant, knowledge-seeking, thoughtful
-2. Playful Otter - social, energetic, fun-loving, creative
-3. Noble Lion - confident, leadership, protective, courageous
-4. Curious Fox - clever, adaptable, mischievous, quick-witted
-5. Gentle Deer - empathetic, graceful, intuitive, peaceful
-6. Mighty Dragon - ambitious, powerful, mysterious, passionate
-7. Loyal Wolf - devoted, strategic, team-oriented, protective
-8. Free Spirit Eagle - independent, visionary, bold, freedom-loving
-9. Creative Peacock - artistic, expressive, unique, vibrant
-10. Steady Turtle - patient, wise, persistent, calm
+Consider a wide range of animals and their symbolic traits:
+- Mammals: Lion (leadership), Wolf (loyalty), Fox (cleverness), Deer (gentleness), Otter (playfulness), Bear (strength), Rabbit (alertness), etc.
+- Birds: Eagle (freedom), Owl (wisdom), Peacock (creativity), Swan (grace), Hawk (focus), etc.
+- Reptiles/Mythical: Dragon (power), Turtle (patience), Chameleon (adaptability), etc.
+- Others: Dolphin (intelligence), Butterfly (transformation), etc.
 
-Analyze their facial expression, eyes, overall energy, and demeanor to determine which animal character best matches their personality.
+Choose the animal that BEST matches their unique personality based on what you observe in the photo. Be creative and specific - don't limit yourself to common choices.
+
+Analyze their:
+- Facial expression and micro-expressions
+- Eye contact and gaze
+- Body posture and energy
+- Overall demeanor and presence
+- Any distinctive features that suggest specific traits
 
 Return ONLY a valid JSON response with this exact structure:
 {
-  "suggestedCharacter": "Character name from the list above",
+  "suggestedCharacter": "[Descriptive Animal Name, e.g., 'Playful Dolphin', 'Wise Elephant', 'Fierce Tiger']",
   "confidence": 0.75-0.95,
-  "traits": ["trait1", "trait2", "trait3", "trait4"],
-  "reasoning": "Brief explanation of why this animal matches their expression and energy",
-  "personalizedStory": "Looking at your photo, I can see your [specific expression/feature] which reveals the essence of the [animal]. Your [observed quality] mirrors the [animal]'s [trait], showing someone who [personality insight]. Just as the [animal] [characteristic behavior], you radiate [quality]. This unique combination of [trait] and [trait] makes you a true [animal] spirit."
+  "traits": ["specific trait based on photo", "observed personality trait", "unique characteristic", "distinguishing quality"],
+  "reasoning": "I observe [specific facial features/expressions] in your photo that strongly suggest [personality traits]. Your [specific observation] particularly reminds me of how [animal] exhibits [behavior/trait].",
+  "personalizedStory": "Looking at your photo, I can see your [specific observed expression/feature] which reveals the essence of the [animal]. Your [specific observed quality] mirrors the [animal]'s [trait], showing someone who [specific personality insight based on photo]. Just as the [animal] [characteristic behavior], you radiate [observed quality]. This unique combination of [observed trait] and [observed trait] makes you a true [animal] spirit."
 }
 
-Important: Keep all text on single lines without newline characters.
+Important: 
+- Base ALL observations on what you actually see in the photo
+- Be specific about facial features, expressions, and body language you observe
+- Choose unique and creative animal matches, not just common ones
+- Keep all text on single lines without newline characters
