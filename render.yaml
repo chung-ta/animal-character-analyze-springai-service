@@ -1,0 +1,20 @@
+services:
+  # Backend API Service
+  - type: web
+    name: animal-character-analyzer-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    repo: https://github.com/YOUR_GITHUB_USERNAME/animal-character-analyze-service
+    branch: main
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: SERVER_PORT
+        value: 8080
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: CLAUDE_API_KEY
+        sync: false  # This will be set manually in Render dashboard
+      - key: JAVA_OPTS
+        value: -Xmx512m -Xms256m
+    autoDeploy: true
+    plan: free  # Change to 'starter' or higher for production

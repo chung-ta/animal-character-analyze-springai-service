@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: animal-character-analyzer-service
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+claude:
+  api:
+    key: ${CLAUDE_API_KEY:}
+    url: https://api.anthropic.com/v1
+    model: ${CLAUDE_MODEL:claude-3-opus-20240229}  # Using Opus for reliability
+    max-tokens: ${CLAUDE_MAX_TOKENS:1000}  # Balanced for quality and speed
+    use-real-api: ${CLAUDE_USE_REAL_API:true}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    com.animalanalyzer: DEBUG
+    org.springframework.web: INFO

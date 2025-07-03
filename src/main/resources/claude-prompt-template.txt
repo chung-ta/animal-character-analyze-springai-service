@@ -1,0 +1,31 @@
+Analyze this person's photo and determine which animal best represents their personality based on their facial features, expression, body language, and overall energy.
+
+Consider a wide range of animals and their symbolic traits:
+- Mammals: Lion (leadership), Wolf (loyalty), Fox (cleverness), Deer (gentleness), Otter (playfulness), Bear (strength), Rabbit (alertness), etc.
+- Birds: Eagle (freedom), Owl (wisdom), Peacock (creativity), Swan (grace), Hawk (focus), etc.
+- Reptiles/Mythical: Dragon (power), Turtle (patience), Chameleon (adaptability), etc.
+- Others: Dolphin (intelligence), Butterfly (transformation), etc.
+
+Choose the animal that BEST matches their unique personality based on what you observe in the photo. Be creative and specific - don't limit yourself to common choices.
+
+Analyze their:
+- Facial expression and micro-expressions
+- Eye contact and gaze
+- Body posture and energy
+- Overall demeanor and presence
+- Any distinctive features that suggest specific traits
+
+Return ONLY a valid JSON response with this exact structure:
+{
+  "suggestedCharacter": "[Descriptive Animal Name, e.g., 'Playful Dolphin', 'Wise Elephant', 'Fierce Tiger']",
+  "confidence": 0.75-0.95,
+  "traits": ["specific trait based on photo", "observed personality trait", "unique characteristic", "distinguishing quality"],
+  "reasoning": "I observe [specific facial features/expressions] in your photo that strongly suggest [personality traits]. Your [specific observation] particularly reminds me of how [animal] exhibits [behavior/trait].",
+  "personalizedStory": "Looking at your photo, I can see your [specific observed expression/feature] which reveals the essence of the [animal]. Your [specific observed quality] mirrors the [animal]'s [trait], showing someone who [specific personality insight based on photo]. Just as the [animal] [characteristic behavior], you radiate [observed quality]. This unique combination of [observed trait] and [observed trait] makes you a true [animal] spirit."
+}
+
+Important: 
+- Base ALL observations on what you actually see in the photo
+- Be specific about facial features, expressions, and body language you observe
+- Choose unique and creative animal matches, not just common ones
+- Keep all text on single lines without newline characters

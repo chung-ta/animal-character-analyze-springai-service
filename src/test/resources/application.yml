@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: animal-character-analyzer-service-test
+
+claude:
+  api:
+    key: test-key
+    url: https://test-api.anthropic.com/v1
+    model: claude-3-opus-20240229
+    max-tokens: 1000
+    use-real-api: false
+
+logging:
+  level:
+    com.animalanalyzer: DEBUG
