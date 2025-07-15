@@ -3,18 +3,28 @@ server:
 
 spring:
   application:
-    name: animal-character-analyzer-service
+    name: animal-character-analyzer-springai-service
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  ai:
+    anthropic:
+      api-key: ${CLAUDE_API_KEY:}
+      base-url: https://api.anthropic.com
+      chat:
+        options:
+          model: ${CLAUDE_MODEL:claude-3-opus-20240229}
+          max-tokens: ${CLAUDE_MAX_TOKENS:1500}
+          temperature: 0.7
 
+# Legacy configuration for backward compatibility
 claude:
   api:
     key: ${CLAUDE_API_KEY:}
     url: https://api.anthropic.com/v1
-    model: ${CLAUDE_MODEL:claude-3-opus-20240229}  # Using Opus for reliability
-    max-tokens: ${CLAUDE_MAX_TOKENS:1000}  # Balanced for quality and speed
+    model: ${CLAUDE_MODEL:claude-3-opus-20240229}
+    max-tokens: ${CLAUDE_MAX_TOKENS:1500}
     use-real-api: ${CLAUDE_USE_REAL_API:true}
 
 management:

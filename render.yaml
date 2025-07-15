@@ -4,7 +4,7 @@ services:
     name: animal-character-analyzer-api
     runtime: docker
     dockerfilePath: ./Dockerfile
-    repo: https://github.com/YOUR_GITHUB_USERNAME/animal-character-analyze-service
+    repo: https://github.com/YOUR_GITHUB_USERNAME/animal-character-analyze-springai-service
     branch: main
     healthCheckPath: /api/v1/health
     envVars:

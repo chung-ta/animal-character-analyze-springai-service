@@ -28,7 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-@Service
+/**
+ * Direct implementation using WebClient calls to Claude API.
+ * Available as fallback option.
+ */
+@Service("directClaudeService")
 @Slf4j
 public class ClaudeAIService implements AIService {
     

@@ -1,6 +1,24 @@
-# Animal Character Analyzer Service (Backend)
+# Animal Character Analyzer Spring AI Service (Backend)
 
 A Spring Boot REST API service that analyzes user photos using Claude AI to match them with cartoon/fantasy animal characters.
+
+## 🚀 Running the Complete Application
+
+To run the full Animal Character Analyzer application:
+
+```bash
+# Terminal 1: Start Backend Service
+cd animal-character-analyze-springai-service
+export CLAUDE_API_KEY=your-claude-api-key-here
+mvn spring-boot:run
+
+# Terminal 2: Start Frontend App
+cd animal-character-analyze-react-app
+npm install
+npm run dev
+```
+
+Then open http://localhost:5173 in your browser.
 
 ## Overview
 
@@ -15,9 +33,9 @@ This is the backend service for the Animal Character Analyzer project. It provid
 
 - **Java 17+** - Programming language
 - **Spring Boot 3.x** - Application framework
+- **Spring AI** - AI integration framework
 - **Spring Web MVC** - REST API framework
-- **Maven/Gradle** - Build tool
-- **Caffeine** - In-memory caching
+- **Maven** - Build tool
 - **Claude AI API** - Image analysis and character matching
 - **Spring Boot Actuator** - Monitoring and health checks
 
@@ -27,63 +45,62 @@ This is the backend service for the Animal Character Analyzer project. It provid
 - Maven 3.6+ or Gradle 7+
 - Claude AI API key
 
-## Getting Started
+## Quick Start
 
-1. Clone the repository:
+### Prerequisites
+1. Get a Claude API key from [Anthropic Console](https://console.anthropic.com/)
+2. Set the API key as an environment variable:
+   ```bash
+   export CLAUDE_API_KEY=your-api-key-here
+   ```
+
+### Option 1: Run with Maven (Recommended)
+
 ```bash
-git clone https://github.com/[your-username]/animal-character-analyze-service.git
-cd animal-character-analyze-service
-```
-
-2. Create `application.yml` in `src/main/resources/`:
-```yaml
-server:
-  port: 8080
-
-claude:
-  api:
-    key: ${CLAUDE_API_KEY}
-    url: https://api.anthropic.com/v1/messages
-
-spring:
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,metrics,prometheus
-```
-
-3. Set environment variable:
-```bash
-export CLAUDE_API_KEY=your-api-key-here
-```
-
-4. Build and run:
-
-### Option 1: Using Maven
-```bash
-# Build the application
-./mvnw clean package
+# Clone the repository
+git clone https://github.com/[your-username]/animal-character-analyze-springai-service.git
+cd animal-character-analyze-springai-service
 
 # Run the application
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
+
+The service will start on http://localhost:8080
+
+### Option 2: Build and Run JAR
+
+```bash
+# Build the application
+mvn clean package
+
+# Run the JAR
+java -jar target/animal-character-analyzer-springai-service-0.0.1-SNAPSHOT.jar
+```
+
+### Option 3: Run with Custom Configuration
+
+1. Copy the example configuration:
+   ```bash
+   cp src/main/resources/application-local.yml.example src/main/resources/application-local.yml
+   ```
+
+2. Edit `application-local.yml` with your settings
+
+3. Run with the local profile:
+   ```bash
+   mvn spring-boot:run -Dspring-boot.run.profiles=local
+   ```
 
 ### Option 2: Using Docker
 ```bash
 # Build the Docker image
-docker build -t animal-character-analyzer-service .
+docker build -t animal-character-analyzer-springai-service .
 
 # Run the container
 docker run -p 8080:8080 \
   -e CLAUDE_API_KEY=${CLAUDE_API_KEY} \
   -e SPRING_PROFILES_ACTIVE=development \
-  animal-character-analyzer-service
+  animal-character-analyzer-springai-service
 
 # Or run with docker-compose from parent directory
 cd ..
@@ -166,13 +183,13 @@ Spring Boot Actuator endpoints:
 
 1. Build the Docker image:
 ```bash
-docker build -t animal-character-analyzer-service .
+docker build -t animal-character-analyzer-springai-service .
 ```
 
 2. Run the container:
 ```bash
 # Basic run
-docker run -p 8080:8080 -e CLAUDE_API_KEY=your-key animal-character-analyzer-service
+docker run -p 8080:8080 -e CLAUDE_API_KEY=your-key animal-character-analyzer-springai-service
 
 # Run with all environment variables
 docker run -p 8080:8080 \
@@ -180,7 +197,7 @@ docker run -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=production \
   -e SERVER_PORT=8080 \
   --name animal-analyzer-backend \
-  animal-character-analyzer-service
+  animal-character-analyzer-springai-service
 ```
 
 3. Test the container:
@@ -232,7 +249,7 @@ Run tests:
 
 ## Related Projects
 
-- [animal-character-analyze-app](https://github.com/[your-username]/animal-character-analyze-app) - Frontend React application
+- [animal-character-analyze-react-app](https://github.com/[your-username]/animal-character-analyze-react-app) - Frontend React application
 
 ## License
 
