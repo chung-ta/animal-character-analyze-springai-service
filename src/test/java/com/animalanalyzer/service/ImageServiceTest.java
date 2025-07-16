@@ -1,5 +1,6 @@
 package com.animalanalyzer.service;
 
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -47,7 +48,7 @@ class ImageServiceTest {
                 new byte[0]
         );
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        val exception = assertThrows(IllegalArgumentException.class, () -> {
             imageService.processImage(emptyFile);
         });
 
@@ -63,7 +64,7 @@ class ImageServiceTest {
                 new byte[1024]
         );
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        val exception = assertThrows(IllegalArgumentException.class, () -> {
             imageService.processImage(gifFile);
         });
 
@@ -81,7 +82,7 @@ class ImageServiceTest {
                 largeContent
         );
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        val exception = assertThrows(IllegalArgumentException.class, () -> {
             imageService.processImage(largeFile);
         });
 

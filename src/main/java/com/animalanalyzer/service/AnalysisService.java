@@ -4,6 +4,7 @@ import com.animalanalyzer.model.AIAnalysisResult;
 import com.animalanalyzer.model.AnalysisResponse;
 import com.animalanalyzer.model.Character;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,15 +26,15 @@ public class AnalysisService {
         log.info("Starting image analysis for file: {}", file.getOriginalFilename());
         
         // Process image
-        String imageBase64 = imageService.processImage(file);
+        val imageBase64 = imageService.processImage(file);
         log.debug("Image processed successfully");
         
         // Analyze with AI
-        AIAnalysisResult aiResult = aiService.analyzeImage(imageBase64);
+        val aiResult = aiService.analyzeImage(imageBase64);
         log.debug("AI analysis completed: {}", aiResult.getSuggestedCharacter());
         
         // Create a dynamic character based on Claude's analysis
-        Character character = Character.builder()
+        val character = Character.builder()
             .id(aiResult.getSuggestedCharacter().toLowerCase().replace(" ", "-"))
             .name(aiResult.getSuggestedCharacter())
             .traits(aiResult.getTraits())

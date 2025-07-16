@@ -3,6 +3,7 @@ package com.animalanalyzer.controller;
 import com.animalanalyzer.model.AnalysisResponse;
 import com.animalanalyzer.model.Character;
 import com.animalanalyzer.service.AnalysisService;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,7 +48,7 @@ class AnalysisControllerTest {
 
         when(analysisService.analyzeImage(any())).thenReturn(mockResponse);
 
-        MockMultipartFile file = new MockMultipartFile(
+        val file = new MockMultipartFile(
                 "image",
                 "test.jpg",
                 MediaType.IMAGE_JPEG_VALUE,
@@ -87,7 +88,7 @@ class AnalysisControllerTest {
         when(analysisService.analyzeImage(any()))
                 .thenThrow(new RuntimeException("AI service error"));
 
-        MockMultipartFile file = new MockMultipartFile(
+        val file = new MockMultipartFile(
                 "image",
                 "test.jpg",
                 MediaType.IMAGE_JPEG_VALUE,

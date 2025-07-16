@@ -3,6 +3,7 @@ package com.animalanalyzer.service;
 import com.animalanalyzer.model.AIAnalysisResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.anthropic.api.AnthropicApi;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,13 +70,13 @@ public class SpringAIHybridService implements AIService {
         log.info("Analyzing image with Spring AI Hybrid approach");
         
         try {
-            String promptText = loadPromptTemplate();
+            val promptText = loadPromptTemplate();
             
             // Clean base64 data
-            String cleanedBase64 = imageBase64.replaceFirst("^data:image/[^;]+;base64,", "");
+            val cleanedBase64 = imageBase64.replaceFirst("^data:image/[^;]+;base64,", "");
             
             // Build request body that Anthropic expects
-            Map<String, Object> requestBody = Map.of(
+            val requestBody = Map.of(
                 "model", model,
                 "max_tokens", maxTokens,
                 "messages", List.of(
@@ -102,7 +103,7 @@ public class SpringAIHybridService implements AIService {
             log.debug("Sending image request to Anthropic API");
             
             // Use RestClient to send the request with proper headers
-            ResponseEntity<Map> response = restClient.post()
+            val response = restClient.post()
                     .uri("/v1/messages")
                     .header("x-api-key", apiKey)
                     .body(requestBody)
@@ -112,15 +113,15 @@ public class SpringAIHybridService implements AIService {
             log.info("Received response from Anthropic");
             
             // Extract content from response
-            Map<String, Object> responseBody = response.getBody();
-            List<Map<String, Object>> content = (List<Map<String, Object>>) responseBody.get("content");
-            String textContent = (String) content.get(0).get("text");
+            val responseBody = response.getBody();
+            val content = (List<Map<String, Object>>) responseBody.get("content");
+            val textContent = (String) content.get(0).get("text");
             
             log.debug("Extracted response content");
             
             // Parse JSON from response
-            String jsonResponse = extractJsonFromResponse(textContent);
-            AIAnalysisResult result = objectMapper.readValue(jsonResponse, AIAnalysisResult.class);
+            val jsonResponse = extractJsonFromResponse(textContent);
+            val result = objectMapper.readValue(jsonResponse, AIAnalysisResult.class);
             
             return AIAnalysisResult.builder()
                     .suggestedCharacter(result.getSuggestedCharacter())
@@ -142,8 +143,8 @@ public class SpringAIHybridService implements AIService {
     }
     
     private String extractJsonFromResponse(String response) {
-        int start = response.indexOf("{");
-        int end = response.lastIndexOf("}");
+        val start = response.indexOf("{");
+        val end = response.lastIndexOf("}");
         
         if (start != -1 && end != -1 && end > start) {
             return response.substring(start, end + 1).trim();

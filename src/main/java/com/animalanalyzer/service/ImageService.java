@@ -1,6 +1,7 @@
 package com.animalanalyzer.service;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,13 +26,13 @@ public class ImageService {
         validateImage(file);
         
         // Read and process image
-        BufferedImage image = ImageIO.read(file.getInputStream());
-        BufferedImage resized = resizeImage(image, MAX_IMAGE_SIZE);
+        val image = ImageIO.read(file.getInputStream());
+        val resized = resizeImage(image, MAX_IMAGE_SIZE);
         
         // Convert to base64
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        val baos = new ByteArrayOutputStream();
         ImageIO.write(resized, "jpg", baos);
-        byte[] imageBytes = baos.toByteArray();
+        val imageBytes = baos.toByteArray();
         
         return Base64.getEncoder().encodeToString(imageBytes);
     }
@@ -51,21 +52,21 @@ public class ImageService {
     }
     
     private BufferedImage resizeImage(BufferedImage originalImage, int maxSize) {
-        int width = originalImage.getWidth();
-        int height = originalImage.getHeight();
+        val width = originalImage.getWidth();
+        val height = originalImage.getHeight();
         
         // Calculate new dimensions maintaining aspect ratio
-        double scale = Math.min((double) maxSize / width, (double) maxSize / height);
+        val scale = Math.min((double) maxSize / width, (double) maxSize / height);
         
         if (scale >= 1.0) {
             return originalImage; // No need to resize
         }
         
-        int newWidth = (int) (width * scale);
-        int newHeight = (int) (height * scale);
+        val newWidth = (int) (width * scale);
+        val newHeight = (int) (height * scale);
         
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = resizedImage.createGraphics();
+        val resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+        val g2d = resizedImage.createGraphics();
         
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.drawImage(originalImage, 0, 0, newWidth, newHeight, null);

@@ -4,6 +4,7 @@ import com.animalanalyzer.model.Character;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class CharacterService {
     @PostConstruct
     public void loadCharacters() {
         try {
-            ClassPathResource resource = new ClassPathResource("characters.json");
+            val resource = new ClassPathResource("characters.json");
             characters = objectMapper.readValue(
                 resource.getInputStream(), 
                 new TypeReference<List<Character>>() {}

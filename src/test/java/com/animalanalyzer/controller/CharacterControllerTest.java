@@ -2,6 +2,7 @@ package com.animalanalyzer.controller;
 
 import com.animalanalyzer.model.Character;
 import com.animalanalyzer.service.CharacterService;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,13 +28,13 @@ class CharacterControllerTest {
 
     @Test
     void testGetAllCharacters() throws Exception {
-        Character owl = new Character();
+        val owl = new Character();
         owl.setId("wise-owl");
         owl.setName("Wise Owl");
         owl.setSpecies("Great Horned Owl");
         owl.setTraits(Arrays.asList("Intelligent", "Observant"));
 
-        Character otter = new Character();
+        val otter = new Character();
         otter.setId("playful-otter");
         otter.setName("Playful Otter");
         otter.setSpecies("River Otter");
@@ -52,7 +53,7 @@ class CharacterControllerTest {
 
     @Test
     void testGetCharacterById() throws Exception {
-        Character owl = new Character();
+        val owl = new Character();
         owl.setId("wise-owl");
         owl.setName("Wise Owl");
         owl.setSpecies("Great Horned Owl");

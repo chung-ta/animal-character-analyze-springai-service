@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -66,7 +67,7 @@ public class ClaudeAIService implements AIService {
         this.apiUrl = apiUrl;
         
         // Configure connection timeouts for better performance
-        ConnectionProvider provider = ConnectionProvider.builder("claude-api")
+        val provider = ConnectionProvider.builder("claude-api")
             .maxConnections(10)
             .maxIdleTime(Duration.ofSeconds(20))
             .maxLifeTime(Duration.ofSeconds(60))
@@ -74,7 +75,7 @@ public class ClaudeAIService implements AIService {
             .evictInBackground(Duration.ofSeconds(120))
             .build();
             
-        HttpClient httpClient = HttpClient.create(provider)
+        val httpClient = HttpClient.create(provider)
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
             .responseTimeout(Duration.ofSeconds(120))
             .doOnConnected(conn ->
@@ -106,7 +107,7 @@ public class ClaudeAIService implements AIService {
         // Simulate personality detection
         // In production, this would use Claude's actual image analysis
         
-        String[] expressionTypes = {
+        val expressionTypes = new String[]{
             "warm and approachable smile",
             "thoughtful and contemplative expression",
             "confident and determined gaze",
@@ -114,7 +115,7 @@ public class ClaudeAIService implements AIService {
             "calm and serene presence"
         };
         
-        String[] energyLevels = {
+        val energyLevels = new String[]{
             "vibrant and dynamic energy",
             "steady and grounded presence",
             "gentle and nurturing aura",
@@ -122,8 +123,8 @@ public class ClaudeAIService implements AIService {
             "balanced and harmonious disposition"
         };
         
-        String expression = expressionTypes[random.nextInt(expressionTypes.length)];
-        String energy = energyLevels[random.nextInt(energyLevels.length)];
+        val expression = expressionTypes[random.nextInt(expressionTypes.length)];
+        val energy = energyLevels[random.nextInt(energyLevels.length)];
         
         return PersonalityAnalysis.builder()
             .expression(expression)
@@ -139,7 +140,7 @@ public class ClaudeAIService implements AIService {
     private Character matchCharacterToPersonality(PersonalityAnalysis personality) {
         // Smart matching based on personality analysis
         // For demo, we'll use keywords to match
-        List<Character> characters = characterService.getAllCharacters();
+        val characters = characterService.getAllCharacters();
         
         if (personality.getExpression().contains("thoughtful")) {
             return characterService.findById("wise-owl").orElse(characters.get(0));
@@ -178,7 +179,7 @@ public class ClaudeAIService implements AIService {
     }
     
     private String getCharacterAction(Character character) {
-        Map<String, String> actions = Map.of(
+        val actions = Map.of(
             "wise-owl", "observes the world with keen insight",
             "playful-otter", "brings joy to every moment",
             "noble-lion", "leads with courage and strength",
@@ -194,7 +195,7 @@ public class ClaudeAIService implements AIService {
     }
     
     private String getPersonalityInsight(Character character) {
-        Map<String, String> insights = Map.of(
+        val insights = Map.of(
             "wise-owl", "values deep understanding and thoughtful analysis",
             "playful-otter", "finds happiness in connecting with others",
             "noble-lion", "naturally inspires and protects those around them",
@@ -221,9 +222,9 @@ public class ClaudeAIService implements AIService {
     
     private AIAnalysisResult callClaudeAPI(String imageBase64) throws Exception {
         try {
-            String prompt = loadPromptTemplate();
+            val prompt = loadPromptTemplate();
             
-            Map<String, Object> requestBody = Map.of(
+            val requestBody = Map.of(
                 "model", model,
                 "max_tokens", maxTokens,
                 "messages", List.of(
@@ -243,9 +244,9 @@ public class ClaudeAIService implements AIService {
             
             log.info("Sending request to Claude API with model: {}", model);
             log.debug("Request body: {}", objectMapper.writeValueAsString(requestBody));
-            long startTime = System.currentTimeMillis();
+            val startTime = System.currentTimeMillis();
             
-            Map<String, Object> response = webClient.post()
+            val response = webClient.post()
                 .uri("/messages")
                 .bodyValue(requestBody)
                 .retrieve()
@@ -258,24 +259,24 @@ public class ClaudeAIService implements AIService {
                 .bodyToMono(Map.class)
                 .block();
             
-            long duration = System.currentTimeMillis() - startTime;
+            val duration = System.currentTimeMillis() - startTime;
             log.info("Claude API responded in {} ms", duration);
             
             log.debug("Received response from Claude API");
             
             // Extract the assistant's response
-            List<Map<String, Object>> content = (List<Map<String, Object>>) response.get("content");
+            val content = (List<Map<String, Object>>) response.get("content");
             if (content != null && !content.isEmpty()) {
-                String textResponse = (String) content.get(0).get("text");
+                val textResponse = (String) content.get(0).get("text");
                 
                 // Claude sometimes returns incomplete JSON or with formatting issues
                 // Try to extract JSON from the response
-                String jsonResponse = extractJsonFromResponse(textResponse);
+                val jsonResponse = extractJsonFromResponse(textResponse);
                 
                 log.debug("Extracted JSON response: {}", jsonResponse);
                 
                 // Parse the JSON response
-                AIAnalysisResult result = objectMapper.readValue(jsonResponse, AIAnalysisResult.class);
+                val result = objectMapper.readValue(jsonResponse, AIAnalysisResult.class);
                 
                 // Return the Claude analysis directly - no need to match predefined characters
                 return AIAnalysisResult.builder()
@@ -308,11 +309,11 @@ public class ClaudeAIService implements AIService {
     
     private String extractJsonFromResponse(String response) {
         // Try to find JSON object in the response
-        int startIndex = response.indexOf("{");
-        int endIndex = response.lastIndexOf("}");
+        val startIndex = response.indexOf("{");
+        val endIndex = response.lastIndexOf("}");
         
         if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-            String jsonStr = response.substring(startIndex, endIndex + 1);
+            var jsonStr = response.substring(startIndex, endIndex + 1);
             
             // Claude sometimes returns JSON with literal \n in the structure (not in strings)
             // Remove these literal \n characters that appear outside of string values
@@ -324,12 +325,12 @@ public class ClaudeAIService implements AIService {
             
             // Remove any remaining literal \n that's not inside quotes
             // This is a more targeted approach that preserves \n inside string values
-            StringBuilder cleaned = new StringBuilder();
-            boolean inString = false;
-            boolean escape = false;
+            val cleaned = new StringBuilder();
+            var inString = false;
+            var escape = false;
             
-            for (int i = 0; i < jsonStr.length(); i++) {
-                char c = jsonStr.charAt(i);
+            for (var i = 0; i < jsonStr.length(); i++) {
+                val c = jsonStr.charAt(i);
                 
                 if (!escape && c == '"') {
                     inString = !inString;

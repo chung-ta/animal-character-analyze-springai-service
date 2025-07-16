@@ -3,6 +3,7 @@ package com.animalanalyzer.service;
 import com.animalanalyzer.model.AIAnalysisResult;
 import com.animalanalyzer.model.AnalysisResponse;
 import com.animalanalyzer.model.Character;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,13 +67,13 @@ class AnalysisServiceTest {
 
     @Test
     void testAnalyzeImageSuccess() throws Exception {
-        String processedImageBase64 = "processedBase64String";
+        val processedImageBase64 = "processedBase64String";
         
         when(imageService.processImage(any())).thenReturn(processedImageBase64);
         when(aiService.analyzeImage(processedImageBase64)).thenReturn(mockAIResult);
         when(characterService.findByName("Playful Otter")).thenReturn(Optional.of(mockCharacter));
 
-        AnalysisResponse response = analysisService.analyzeImage(mockFile);
+        val response = analysisService.analyzeImage(mockFile);
 
         assertNotNull(response);
         assertEquals("Playful Otter", response.getCharacter().getName());
@@ -87,7 +88,7 @@ class AnalysisServiceTest {
 
     @Test
     void testAnalyzeImageCharacterNotFound() throws Exception {
-        String processedImageBase64 = "processedBase64String";
+        val processedImageBase64 = "processedBase64String";
         
         when(imageService.processImage(any())).thenReturn(processedImageBase64);
         when(aiService.analyzeImage(processedImageBase64)).thenReturn(mockAIResult);
@@ -102,7 +103,7 @@ class AnalysisServiceTest {
 
     @Test
     void testAnalyzeImageAIServiceException() throws Exception {
-        String processedImageBase64 = "processedBase64String";
+        val processedImageBase64 = "processedBase64String";
         
         when(imageService.processImage(any())).thenReturn(processedImageBase64);
         when(aiService.analyzeImage(processedImageBase64)).thenThrow(new RuntimeException("AI service error"));
